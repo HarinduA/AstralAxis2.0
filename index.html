@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Set up scene, camera, and renderer
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create sun
+        var sunGeometry = new THREE.SphereGeometry(2, 32, 32);
+        var sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        var sun = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sun);
+
+        // Create planets
+        var mercury = createPlanet(0.4, 0x964B00, 5);
+        var venus = createPlanet(0.5, 0xFFA500, 7);
+        var earth = createPlanet(0.5, 0x0000ff, 10);
+        var mars = createPlanet(0.3, 0xFF0000, 13);
+
+        // Add planets to scene
+        scene.add(mercury);
+        scene.add(venus);
+        scene.add(earth);
+        scene.add(mars);
+
+        // Add orbit lines
+        var orbitMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+        var orbitGeometry = new THREE.CircleGeometry(10, 64);
+        orbitGeometry.vertices.shift();
+        var mercuryOrbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
+        var venusOrbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
+        var earthOrbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
+        var marsOrbit = new THREE.LineLoop(orbitGeometry, orbitMaterial);
+        scene.add(mercuryOrbit);
+        scene.add(venusOrbit);
+        scene.add(earthOrbit);
+        scene.add(marsOrbit);
+
+        // Set orbit positions
+        mercuryOrbit.position.set(0, 0, 0);
+        venusOrbit.position.set(0, 0, 0);
+        earthOrbit.position.set(0, 0, 0);
+        marsOrbit.position.set(0, 0, 0);
+
+        // Set planet positions
+        mercury.position.set(5, 0, 0);
+        venus.position.set(7, 0, 0);
+        earth.position.set(10, 0, 0);
+        mars.position.set(13, 0, 0);
+
+        // Set camera position
+        camera.position.z = 20;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            // Rotate planets
+            mercury.rotation.y += 0.01;
+            venus.rotation.y += 0.008;
+            earth.rotation.y += 0.005;
+            mars.rotation.y += 0.003;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Function to create a planet
+        function createPlanet(size, color, distance) {
+            var geometry = new THREE.SphereGeometry(size, 32, 32);
+            var material = new THREE.MeshBasicMaterial({ color: color });
+            var planet = new THREE.Mesh(geometry, material);
+            planet.position.set(distance, 0, 0);
+            return planet;
+        }
+    </script>
+</body>
+</html>
